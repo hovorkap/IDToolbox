@@ -7,16 +7,16 @@ import org.springframework.stereotype.Service
 class MrzChecksumGenerator {
 
     fun calculateChecksum(input: String): Int {
-        var sum = 0;
+        var sum = 0
         input.toCharArray().forEachIndexed { index, char -> sum += (listOf(7, 3, 1).get(index % 3) * characterToValue(char)) }
         return sum % 10
     }
 
     fun calculateChecksum(line1: String, line2: String): Int {
         return calculateChecksum(
-                line1.substring(5, 29) +
-                        line2.substring(1, 6) +
-                        line2.substring(8, 14) +
+                line1.substring(5, 30) +
+                        line2.substring(0, 7) +
+                        line2.substring(8, 15) +
                         line2.substring(18, 29))
     }
 

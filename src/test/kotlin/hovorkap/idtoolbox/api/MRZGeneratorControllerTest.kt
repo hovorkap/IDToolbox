@@ -1,7 +1,8 @@
 package hovorkap.idtoolbox.api
 
+import hovorkap.idtoolbox.MrzChecksumGenerator
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -34,5 +35,23 @@ internal class MRZGeneratorControllerTest {
         assertEquals("I<UTOD231458907<<<<<<<<<<<<<<<", result.get(0))
         assertEquals("7408122F1204159UTO<<<<<<<<<<<6", result.get(1))
         assertEquals("ERIKSSON<<ANNA<MARIA<<<<<<<<<<", result.get(2))
+    }
+
+    @Test
+    fun generateMrzHrv() {
+        val result = underTest.generateMrz(
+                documentCode = "IO",
+                countryCode = "HRV",
+                documentNumber = "000000000",
+                dateOfBirth = "770101",
+                sex = "F",
+                dateOfExpiry = "021212",
+                nationality = "HRV",
+                surname = "Specimen",
+                givenNames = "Specimen"
+        )
+        assertEquals("IOHRV0000000000<<<<<<<<<<<<<<<", result.get(0))
+        assertEquals("7701018F0212126HRV<<<<<<<<<<<0", result.get(1))
+        assertEquals("SPECIMEN<<SPECIMEN<<<<<<<<<<<<", result.get(2))
     }
 }

@@ -1,1 +1,8 @@
-server.port: 0
+server.port: 8081
+springdoc:
+  group-configs:
+    - group: MRZ
+      packages-to-scan: hovorkap.idtoolbox.api
+server:
+  servlet:
+    context-path: "/"
