@@ -1,5 +1,6 @@
 package hovorkap.idtoolbox
 
+import hovorkap.idtoolbox.transliteration.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -12,7 +13,7 @@ internal class MrzChecksumGeneratorTest {
 
     @BeforeEach
     fun setUp() {
-        underTest = MrzChecksumGenerator()
+        underTest = MrzChecksumGenerator(listOf(CroatianConverter(), CzechConverter(), GermanConverter(), SlovakConverter(), SpecialCharsConverter()))
     }
 
     @AfterEach

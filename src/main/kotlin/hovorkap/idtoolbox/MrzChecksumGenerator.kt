@@ -1,10 +1,11 @@
 package hovorkap.idtoolbox
 
+import hovorkap.idtoolbox.transliteration.TransliteratingConverter
 import org.apache.commons.lang3.math.NumberUtils.toInt
 import org.springframework.stereotype.Service
 
 @Service
-class MrzChecksumGenerator {
+class MrzChecksumGenerator(private val converters:  List<TransliteratingConverter>) {
 
     fun calculateChecksum(input: String): Int {
         var sum = 0
@@ -22,13 +23,19 @@ class MrzChecksumGenerator {
 
     fun normalize(input: String, length: Int): String = if (input.length > length) {
         throw Exception("Input too long")
-    } else input.toUpperCase().replace(" ", "<") + "<".repeat(length - input.length)
+    } else  {
+        var output = input
+        converters.forEach{ output = it.convert(output)}
+        output.toUpperCase().replace(" ", "<") + "<".repeat(length - input.length)
+    }
 
     fun characterToValue(char: Char): Int = if (char.isDigit()) {
         toInt(char.toString())
     } else if (char.isLetter()) {
         char.toUpperCase().toInt() - 'A'.toInt() + 10
     } else if (char == '<') {
+        0
+    } else if (char == '-') {
         0
     } else throw Exception("Unsupported character $char")
 }
