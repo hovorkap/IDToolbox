@@ -9,6 +9,9 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 @Tag(name = "IDGenerator")
 @RestController
@@ -18,6 +21,12 @@ class MRZGeneratorController(val checksumGenerator: MrzChecksumGenerator) {
     companion object {
         const val PATH = "/api/idgen/td1"
     }
+
+    private val formatter = DateTimeFormatterBuilder()
+    .appendValue(ChronoField.YEAR, 2)
+    .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+    .appendValue(ChronoField.DAY_OF_MONTH, 2)
+    .toFormatter()
 
     @Operation(summary = "Generate MRZ")
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -36,6 +45,9 @@ class MRZGeneratorController(val checksumGenerator: MrzChecksumGenerator) {
 
     ): List<String> {
         val c = checksumGenerator
+
+        dateOfBirth?.let { validateDate(it) }
+        dateOfExpiry?.let { validateDate(it) }
 
         val line1 =
                 c.normalize(documentCode ?: "", 2) +
@@ -62,4 +74,12 @@ class MRZGeneratorController(val checksumGenerator: MrzChecksumGenerator) {
 
     }
 
+    private fun validateDate(doe: String) {
+        if (doe.count() > 0) {
+            LocalDate.parse(doe, formatter).let {
+                assert(it.dayOfMonth > 0)
+                assert(it.year > 0)
+            }
+        }
+    }
 }
